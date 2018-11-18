@@ -1,6 +1,6 @@
 <ul class="media-list">
-@foreach($microposts as $micropost)
-<?php $user =$micropost->user; ?>
+@foreach($favorites as $favorite)
+<?php $user =$favorite->user; ?>
     <li class="media">
         <div class="media-left">
             <img class="media-object img-rounded" src="{{ Gravatar::src($user->email,50) }}" alt="">
@@ -8,22 +8,18 @@
         <div class="media-body">
             <div>
                 {!! link_to_route('users.show',$user->name,['id'=>$user->id]) !!}
-                <span class="text-muted">posted at{{$micropost->created_at}}</span>
+                <span class="text-muted">posted at{{$favorite->created_at}}</span>
             </div>
+                <p>{{ $favorite->content}}</p>
             <div>
-                <p>{!! nl2br(e($micropost->content)) !!}</p>
-            </div>
-            <div>
-                @if(Auth::id() == $micropost->user_id) 
+                @if(Auth::id() == $favorite->user_id) 
                 <!--ログインユーザのIDを取得することができる、Auth::user()->id と同じ動き-->
-                {!! Form::open(['route'=>['microposts.destroy',$micropost->id], 'method'=>'delete']) !!}
+                {!! Form::open(['route'=>['microposts.destroy',$favorite->id], 'method'=>'delete']) !!}
                     {!! Form::submit('Delete',['class'=>'btn btn-danger btn-xs']) !!}           
                 {!! Form::close() !!}   
                 @endif
-                @include('micropost_fav.fav_button', ['micropost' => $micropost])
+                {!! Form::open(['route'=>['micropost.unfav',$favorite->id],'method'=>'delete']) !!}
+                {!! Form::submit('Unfavorite',['class'=>"btn btn-warning btn-xs"]) !!} 
+                {!! Form::close() !!}
             </div>
-          </div>
-    </li>
 @endforeach
-</ul>
-{!! $microposts->render() !!}

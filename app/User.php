@@ -1,5 +1,5 @@
 <?php
-
+// UserModel
 namespace App;
 
 use Illuminate\Notifications\Notifiable;
@@ -72,5 +72,35 @@ class User extends Authenticatable
             //$follow_user_idsに自分のidも追加
             return Micropost::whereIn('user_id',$follow_user_ids);
             //micropostsテーブルのUser_idカラムに $follow_user_ids の中の id を含む場合に全て取得して返す
+        }
+        
+        
+        
+        public function favorites(){
+            return $this->belongsToMany(Micropost::class,'fav_micropost','user_id','micropost_id')->withTimestamps();
+        }
+        
+        public function favorite($micropostId){
+        $exist=$this->is_favorite($micropostId);
+        if($exist){
+            return false;
+        }else{
+            $this->favorites()->attach($micropostId);
+            return true;
+        }
+         }
+        
+        public function unfavorite($micropostId){
+            $exist=$this->is_favorite($micropostId);
+            if($exist){
+               $this->favorites()->detach($micropostId);
+                return true;
+            }else{
+                return false;
+            }
+        }
+        
+        public function is_favorite($micropostId){
+            return $this->favorites()->where('micropost_id',$micropostId)->exists();
         }
     }

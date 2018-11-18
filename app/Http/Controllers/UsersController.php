@@ -45,4 +45,25 @@ class UsersController extends Controller
             $data += $this->counts($user);
             return view('users.followers',$data);
     }
+    public function favorites($id){
+         $user=User::find($id);//渡されたidからuserを特定
+          $favorites=$user->favorites()->paginate(10); //userの持つfavしたmicropostを取得
+            $data=[
+            'user'=>$user,
+            'favorites'=>$favorites,
+            ];
+            $data += $this->counts($user);
+            return view('users.favorites',$data);
+    }
+    
+    public function favoriters($id){
+         $user=User::find($id);
+        $favorites=$user->favoriters()->paginate(10);
+        $data=[
+            'user'=>$user,
+            'favoriters'=>$favoriters,
+            ];
+            $data += $this->counts($user);
+            return view('users.favorites',$data);
+    }
 }

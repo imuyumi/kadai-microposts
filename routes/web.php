@@ -18,6 +18,11 @@ Route::group(['middleware'=>['auth']],function(){
                 //GET /users/{id}/followings=>idが{id}番目のuserがフォローしているユーザーを表示
                 Route::get('followers','UsersController@followers')->name('users.followers');
                 //GET /users/{id}/followers=>idが{id}番目のuserをフォローしているユーザーを表示
+                
+                Route::post('favorite','MicropostFavController@store')->name('micropost.fav'); //favする
+                Route::delete('unfavorite','MicropostFavController@destroy')->name('micropost.unfav'); //favを外す
+                Route::get('favorites','UsersController@favorites')->name('users.favorites'); //fav一覧を取得する
+                Route::get('favoriters','UsersController@favoriters')->name('users.favoriters'); //favしているuser一覧を取得する
         });
         Route::resource('microposts', 'MicropostsController',['only'=>['store','destroy']]);
 });
